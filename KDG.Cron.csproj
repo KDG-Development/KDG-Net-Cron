@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+     <PackageId>KDG-Net-Cron</PackageId>
+     <Version>0.0.1</Version>
+     <Authors>Kyle David Group</Authors>
+     <Company>Kyle David Group</Company>
+     <Description>A wrapper for common CRON implementations</Description>
+     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+     <PackageReadmeFile>README.md</PackageReadmeFile>
+   </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="LICENSE" Pack="true" PackagePath=""/>
+    <None Include="README.md" Pack="true" PackagePath=""/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Hangfire.Core" Version="1.8.14" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.14" />
+    <PackageReference Include="Hangfire.PostgreSql" Version="1.20.9" />
+  </ItemGroup>
+
+</Project>
