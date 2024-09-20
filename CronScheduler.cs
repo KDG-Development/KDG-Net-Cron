@@ -1,39 +1,43 @@
-using Hangfire;
 using KDG.Cron.Interfaces;
 
 namespace KDG.Cron;
 
 public class CronScheduler : ICronScheduler {
-    public void ScheduleOneTimeJob(System.Linq.Expressions.Expression<Action> job){
-        Hangfire.BackgroundJob.Enqueue(job);
+
+    public Task Execute(){
+        return Task.CompletedTask;
     }
-    public void ScheduleOneTimeFutureJob(
-        System.Linq.Expressions.Expression<Action> job,
+
+    public void ScheduleOneTimeJob(ICronJob job){
+        Hangfire.BackgroundJob.Enqueue(() => job.Execute());
+    }
+    public void ScheduleOneTimeFutureJob (
+        ICronJob job,
         DateTimeOffset delay
-    ){
+    ) {
         Hangfire.BackgroundJob.Schedule(
-            job,
+            () => job.Execute(),
             delay
         );
     }
     public void ScheduleRecurringJob(
         string jobName,
-        System.Linq.Expressions.Expression<Action> job,
+        ICronJob job,
         Func<string> jobSchedule
     ){
         Hangfire.RecurringJob.AddOrUpdate(
             jobName,
-            job,
+            () => job.Execute(),
             jobSchedule
         );
     }
     public void ScheduleJobContinuation(
         string previousJobName,
-        System.Linq.Expressions.Expression<Action> job
+        ICronJob job
     ){
         Hangfire.BackgroundJob.ContinueJobWith(
             previousJobName,
-            job
+            () => job.Execute()
         );
     }
     public void CancelRecurringJob(string jobName){
