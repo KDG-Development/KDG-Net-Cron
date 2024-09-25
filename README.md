@@ -1,27 +1,40 @@
 # Getting started
 
->Important! - Ensure your application is always running, otherwise your jobs wont execute as expected. 
+> **Important:** Ensure your application is always running, otherwise your jobs wont execute as expected. 
 
 1. Configure the CRON service prior to building the application
-```
+```csharp
 var pgCronService = new KDG.Cron.CronService.PostgreSql();
 
 pgCronService.ConfigureServices(serviceCollection, "postgres-connection-string");
-```
+```csharp
 2. initialize the cron server and dashboard after building the application
 
-```
+```csharp
 KDG.Cron.CronService.InitializeCronServer(webApp, "/optional-cron-job-url", optionalConfiguration);
 ```
 
 3. Initialize the cron scheduler and start scheduling jobs
 
-```
+```csharp
+
 var cronScheduler = new KDG.Cron.CronScheduler();
 
+// initialize an ICronJob class
+public class HelloWorldJob : KDG.Cron.ICronJob {
+  public async Task Execute(){
+    Console.WriteLine("Hello World!");
+    await Task.CompletedTask;
+  }
+}
+
+// register the new HelloWorldJob class to the service provider
+services.AddSingleton<HelloWorldJob>();
+
+// register the recurring job
 cronScheduler.ScheduleRecurringJob(
   "unique-job-identifier",
-  () => Console.WriteLine("Hello World!"),
+  app.Services.GetRequiredService<HelloWorldJob>(),
   Hangfire.Cron.Minutely
 );
 
